@@ -1,0 +1,33 @@
+# Get the list of image files in the directory
+image_files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+
+# Set the desired image size
+image_size = (224, 224)
+
+# Loop through the image files
+for image_file in image_files:
+    # Load and preprocess the image
+    img_path = os.path.join(directory, image_file)
+    img = Image.open(img_path)
+    img = img.resize(image_size)
+    x = np.array(img)
+    x = np.expand_dims(x, axis=0)
+    x = preprocess_input(x)
+
+    # Make predictions
+    preds = model.predict(x)
+    decoded_preds = decode_predictions(preds, top=3)[0]  # Get the top 3 predictions
+
+    # Display the image
+    plt.imshow(img)
+    plt.axis('off')
+
+    # Print the predicted class labels and probabilities
+    print(f'Image: {image_file}')
+    for pred in decoded_preds:
+        print(f'Label: {pred[1]}, Probability: {pred[2]:.4f}')
+    print()
+
+    # Show the plot
+    plt.show()
+ 
